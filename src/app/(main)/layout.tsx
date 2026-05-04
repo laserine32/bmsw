@@ -1,3 +1,4 @@
+import MainFallback from "@/components/shared/main-fallback";
 import Navbar from "@/components/shared/navbar";
 import ProgressBar from "@/components/shared/progress-bar";
 import ScrollTop from "@/components/shared/scroll-top";
@@ -26,7 +27,7 @@ const MainLayout = async ({
 	return (
 		<>
 			<Navbar menu={menu} className="w-full bg-accent" />
-			<Suspense fallback={null}>
+			<Suspense fallback={<MainFallback />}>
 				<div className="py-4 px-2 md:px-10">
 					<ProgressBar />
 					{children}

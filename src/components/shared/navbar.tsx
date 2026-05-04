@@ -17,6 +17,7 @@ import { ListIcon } from "@phosphor-icons/react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import ThemeSwitcher from "./theme-switcher";
 import Search from "./search";
+import { Suspense } from "react";
 
 interface MenuItem {
 	title: string;
@@ -81,8 +82,10 @@ const Navbar = ({
 							</div>
 						</div>
 						<div className="flex gap-2">
-							<Search />
-							<ThemeSwitcher />
+							<Suspense>
+								<Search />
+								<ThemeSwitcher />
+							</Suspense>
 							{/* <Button asChild variant="outline" size="sm">
               <a href={auth.login.url}>{auth.login.title}</a>
             </Button>
@@ -116,8 +119,10 @@ const Navbar = ({
 										<Accordion type="single" collapsible className="flex w-full flex-col gap-4">
 											{menu.map((item) => renderMobileMenuItem(item))}
 										</Accordion>
-										<Search />
-										<ThemeSwitcher />
+										<Suspense>
+											<Search />
+											<ThemeSwitcher />
+										</Suspense>
 										{/* <div className="flex flex-col gap-3">
                     <Button asChild variant="outline">
                       <a href={auth.login.url}>{auth.login.title}</a>
