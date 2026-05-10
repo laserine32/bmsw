@@ -1,7 +1,7 @@
 import { BookmarkSearchPagin } from "@/server/bookmark";
 import { Card, CardHeader } from "../ui/card";
 import Link from "next/link";
-import Image from "next/image";
+import LazyImage from "./lazy-image";
 
 const BookmarkCard = ({ data }: { data: BookmarkSearchPagin }) => {
 	return (
@@ -10,7 +10,7 @@ const BookmarkCard = ({ data }: { data: BookmarkSearchPagin }) => {
 				<Card key={d.id} className="overflow-hidden pt-0">
 					<div className="aspect-video w-full overflow-hidden">
 						<Link href={d.url} target="_blank" className="transition-opacity duration-200 fade-in hover:opacity-70">
-							<Image
+							<LazyImage
 								className="h-full w-full object-cover object-center"
 								src={`data:image/jpeg;base64,${d.image}`}
 								alt={d.imageUrl ?? `image`}

@@ -32,7 +32,6 @@ export const extractOG = async (baseUrl: string) => {
 };
 
 export const url2base64 = async (url: string) => {
-	console.log("get base64 image");
 	const response = await fetch(url);
 	const arrayBuffer = await response.arrayBuffer();
 	const buffer = Buffer.from(arrayBuffer);

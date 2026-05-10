@@ -69,7 +69,6 @@ const BookmarkForm = ({ dataTag }: { dataTag: Array<TagType> }) => {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		setIsLoading(true);
 		try {
-			console.log(values);
 			await addBookmark(values);
 			form.reset();
 			toast.success(`Bookmark added successfully`);
