@@ -12,7 +12,8 @@ const BookmarkCard = ({ data }: { data: BookmarkSearchPagin }) => {
 						<Link href={d.url} target="_blank" className="transition-opacity duration-200 fade-in hover:opacity-70">
 							<LazyImage
 								className="h-full w-full object-cover object-center"
-								src={`data:image/jpeg;base64,${d.image}`}
+								src={d.imageUrl}
+								fallbackSrc={`data:image/jpeg;base64,${d.image}`}
 								alt={d.imageUrl ?? `image`}
 								width={200}
 								height={200}
@@ -21,7 +22,7 @@ const BookmarkCard = ({ data }: { data: BookmarkSearchPagin }) => {
 							/>
 						</Link>
 					</div>
-					<CardHeader>
+					<CardHeader className="px-2 md:px-4">
 						<div className="truncate">
 							<p className="mt-2 text-sm text-foreground/50">{d.url}</p>
 							<h4 className="text-xl hover:underline md:text-xl">

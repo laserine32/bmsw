@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 interface LazyImageProps {
-	src: string;
+	src: string | null;
+	fallbackSrc: string;
 	alt: string;
 	width: number;
 	height: number;
@@ -20,6 +21,7 @@ interface LazyImageProps {
 
 const LazyImage = ({
 	src,
+	fallbackSrc,
 	alt,
 	width,
 	height,
@@ -32,6 +34,7 @@ const LazyImage = ({
 	sizes,
 	onLoad,
 }: LazyImageProps) => {
+	const [urlsrc, setSrc] = useState(src);
 	const [isVisible, setIsVisible] = useState(priority);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const imgRef = useRef<HTMLDivElement>(null);
@@ -63,13 +66,14 @@ const LazyImage = ({
 		setIsLoaded(true);
 		onLoad?.();
 	};
+	const b64src = fallbackSrc?.startsWith("data:") ? fallbackSrc : `data:image/png;base64,${fallbackSrc}`;
 
 	return (
 		<>
 			<div ref={imgRef} className={cn(isLoaded ? "h-full" : "h-96", "w-full")}>
 				<Image
-					src={isVisible ? src : "/blank.svg"}
-					// src={src}
+					// src={isVisible ? src : "/blank.svg"}
+					src={isVisible ? urlsrc || b64src : `/blank.svg`}
 					alt={alt}
 					width={!fill ? width : undefined}
 					height={!fill ? height : undefined}
@@ -82,6 +86,11 @@ const LazyImage = ({
 					className={cn(`transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`, className)}
 					onLoad={handleLoad}
 					loading={priority ? undefined : "lazy"}
+					onError={() => {
+						if (src !== fallbackSrc) {
+							setSrc(fallbackSrc);
+						}
+					}}
 				/>
 			</div>
 		</>
