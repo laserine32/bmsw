@@ -2,7 +2,7 @@
 import { db } from "@/db";
 import { bookmark, bookmarkTags } from "@/db/schema";
 import { ITEMS_PER_PAGE } from "@/lib/constants";
-import { count, desc, ilike, or } from "drizzle-orm";
+import { count, desc, eq, ilike, or } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 
 export type BookmarkType = typeof bookmark.$inferSelect;
@@ -19,7 +19,16 @@ export const getBookmarkSearchPagin = async (search: string, page: number = 1) =
 				)
 			: undefined;
 		return await db
-			.select()
+			.select({
+				id: bookmark.id,
+				url: bookmark.url,
+				siteName: bookmark.siteName,
+				title: bookmark.title,
+				description: bookmark.description,
+				type: bookmark.type,
+				imageUrl: bookmark.imageUrl,
+				date: bookmark.date,
+			})
 			.from(bookmark)
 			.where(where)
 			.orderBy(desc(bookmark.date))
@@ -78,5 +87,15 @@ export const addBookmark = async (values: BookmarkAddType) => {
 		console.error(error);
 		// return { error: "Failed to create bookmark" };
 		throw error;
+	}
+};
+
+export const getBookmarkImage = async (id: string) => {
+	try {
+		const [{ gambar }] = await db.select({ gambar: bookmark.image }).from(bookmark).where(eq(bookmark.id, id)).limit(1);
+		return gambar;
+	} catch (error) {
+		console.error(error);
+		return null;
 	}
 };
