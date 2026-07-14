@@ -1,8 +1,10 @@
 "use server";
 import { db } from "@/db";
 import { msvph } from "@/db/schema";
-import { ITEMS_PER_PAGE } from "@/lib/constants";
-import { count, desc, eq, ilike, or } from "drizzle-orm";
+// import { ITEMS_PER_PAGE } from "@/lib/constants";
+import { count, desc, eq, ilike, or, sql } from "drizzle-orm";
+
+const ITEMS_PER_PAGE = 102;
 
 export type MsvphType = typeof msvph.$inferSelect;
 
@@ -72,5 +74,60 @@ export const getMSPHImage = async (id: string) => {
 	} catch (error) {
 		console.error(error);
 		return null;
+	}
+};
+
+export const getTagMsvphSearchPagin = async (search: string, page: number = 1) => {
+	try {
+		const offset = (page - 1) * ITEMS_PER_PAGE;
+		const where = search ? eq(msvph.siteName, search) : undefined;
+		return await db
+			.select({
+				id: msvph.id,
+				url: msvph.url,
+				siteName: msvph.siteName,
+				title: msvph.title,
+				description: msvph.description,
+				type: msvph.type,
+				imageUrl: msvph.imageUrl,
+				date: msvph.date,
+			})
+			.from(msvph)
+			.where(where)
+			.orderBy(desc(msvph.date))
+			.limit(ITEMS_PER_PAGE)
+			.offset(offset);
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+};
+
+export const getTagMsvphTotalPage = async (search: string): Promise<number> => {
+	const where = search ? eq(msvph.siteName, search) : undefined;
+	const result = await db.select({ total: count() }).from(msvph).where(where);
+	const total = Number(result[0]?.total ?? 0);
+	return Math.ceil(total / ITEMS_PER_PAGE);
+};
+
+export const getRandomMsvph = async () => {
+	try {
+		return await db
+			.select({
+				id: msvph.id,
+				url: msvph.url,
+				siteName: msvph.siteName,
+				title: msvph.title,
+				description: msvph.description,
+				type: msvph.type,
+				imageUrl: msvph.imageUrl,
+				date: msvph.date,
+			})
+			.from(msvph)
+			.orderBy(sql`RANDOM()`)
+			.limit(ITEMS_PER_PAGE);
+	} catch (error) {
+		console.error(error);
+		throw error;
 	}
 };

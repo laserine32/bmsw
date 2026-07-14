@@ -16,8 +16,9 @@ import { Button } from "../ui/button";
 import { ListIcon } from "@phosphor-icons/react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import ThemeSwitcher from "./theme-switcher";
-import Search from "./search";
+import { Search, SearchMobile } from "./search";
 import { Suspense } from "react";
+import { usePathname } from "next/navigation";
 
 interface MenuItem {
 	title: string;
@@ -77,7 +78,7 @@ const Navbar = ({
 							</Link>
 							<div className="flex items-center">
 								<NavigationMenu>
-									<NavigationMenuList>{menu.map((item) => renderMenuItem(item))}</NavigationMenuList>
+									<NavigationMenuList>{menu.map((item) => RenderMenuItem(item))}</NavigationMenuList>
 								</NavigationMenu>
 							</div>
 						</div>
@@ -86,12 +87,6 @@ const Navbar = ({
 								<Search />
 								<ThemeSwitcher />
 							</Suspense>
-							{/* <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button> */}
 						</div>
 					</nav>
 					{/* Mobile Menu */}
@@ -117,20 +112,12 @@ const Navbar = ({
 									</SheetHeader>
 									<div className="flex flex-col gap-6 p-4">
 										<Accordion type="single" collapsible className="flex w-full flex-col gap-4">
-											{menu.map((item) => renderMobileMenuItem(item))}
+											{menu.map((item) => RenderMobileMenuItem(item))}
 										</Accordion>
 										<Suspense>
-											<Search />
+											<SearchMobile />
 											<ThemeSwitcher />
 										</Suspense>
-										{/* <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
-                  </div> */}
 									</div>
 								</SheetContent>
 							</Sheet>
@@ -142,7 +129,12 @@ const Navbar = ({
 	);
 };
 
-const renderMenuItem = (item: MenuItem) => {
+const RenderMenuItem = (item: MenuItem) => {
+	const pthn = usePathname();
+	const pathname = pthn.split("/")[1];
+	if (pathname != `online` && item.url == `/online`) {
+		return;
+	}
 	if (item.items) {
 		return (
 			<NavigationMenuItem key={item.title}>
@@ -171,7 +163,11 @@ const renderMenuItem = (item: MenuItem) => {
 	);
 };
 
-const renderMobileMenuItem = (item: MenuItem) => {
+const RenderMobileMenuItem = (item: MenuItem) => {
+	const pathname = usePathname();
+	if (pathname != `/online` && item.url == `/online`) {
+		return;
+	}
 	if (item.items) {
 		return (
 			<AccordionItem key={item.title} value={item.title} className="border-b-0">

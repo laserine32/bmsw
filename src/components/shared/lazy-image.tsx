@@ -91,6 +91,7 @@ const LazyImage = ({
 							setSrc(fallbackSrc);
 						}
 					}}
+					unoptimized
 				/>
 			</div>
 		</>

@@ -23,6 +23,7 @@ const MainLayout = async ({
 			})),
 		},
 		{ title: "Add", url: "/add" },
+		{ title: "Online", url: "/online" },
 	];
 	return (
 		<>

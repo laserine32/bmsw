@@ -7,7 +7,7 @@ const BookmarkCard = ({ data }: { data: BookmarkSearchPagin }) => {
 	return (
 		<>
 			{data.map((d) => (
-				<Card key={d.id} className="overflow-hidden py-0">
+				<Card key={d.id} className="overflow-hidden py-0 gap-1 md:gap-2">
 					<div className="aspect-video w-full overflow-hidden">
 						<Link href={d.url} target="_blank" className="transition-opacity duration-200 fade-in hover:opacity-70">
 							<LazyImage
@@ -22,17 +22,17 @@ const BookmarkCard = ({ data }: { data: BookmarkSearchPagin }) => {
 							/>
 						</Link>
 					</div>
-					<CardHeader className="px-1.5 md:px-2">
-						<div className="truncate">
-							<p className="mt-2 text-xs text-foreground/50">{d.url}</p>
-							<h4 className="text-sm hover:underline md:text-sm">
+					<CardHeader className="block px-1.5 md:px-2">
+						<div className="w-full">
+							<p className="mt-0 md:mt-2 text-xxs md:text-xs text-foreground/50 truncate">
+								{d.siteName == `undefined` ? d.url : d.siteName}
+							</p>
+							<h4 className="text-xs hover:underline md:text-sm truncate">
 								<Link href={d.url} target="_blank">
 									{d.title}
 								</Link>
 							</h4>
-							<p className="mb-2 text-xs text-foreground/50">
-								{d.siteName} · {d.description}
-							</p>
+							<p className="mb-2 text-xxs md:text-xs text-foreground/50 truncate">{d.description}</p>
 						</div>
 					</CardHeader>
 				</Card>

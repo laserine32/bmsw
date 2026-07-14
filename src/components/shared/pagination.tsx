@@ -106,7 +106,7 @@ const PaginationArrow: FC<PaginationArrowProps> = ({ href, direction, isDisabled
 		},
 	);
 	const icon =
-		direction === "left" ? <CaretDoubleLeftIcon className="size-6" /> : <CaretDoubleRightIcon className="size-6" />;
+		direction === "left" ? <CaretDoubleLeftIcon className="size-4" /> : <CaretDoubleRightIcon className="size-4" />;
 	return isDisabled ? (
 		<div className={className}>{icon}</div>
 	) : (
