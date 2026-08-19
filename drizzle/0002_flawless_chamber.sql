@@ -1,1 +1,0 @@
-ALTER TABLE "msvph" RENAME COLUMN "serial" TO "id";

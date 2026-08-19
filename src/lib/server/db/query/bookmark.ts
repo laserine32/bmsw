@@ -1,0 +1,105 @@
+import { count, desc, eq, ilike, inArray, or } from 'drizzle-orm';
+import { bookmark, bookmarkTags, tags } from '../schema';
+import { db } from '..';
+import { createId } from '@paralleldrive/cuid2';
+
+const ITEMS_PER_PAGE = 36;
+export type BookmarkType = Omit<typeof bookmark.$inferSelect, 'image'>;
+
+export const getBookmarkSearchPagin = async (search: string, page: number = 1) => {
+	try {
+		const offset = (page - 1) * ITEMS_PER_PAGE;
+		const where = search
+			? or(
+					ilike(bookmark.title, `%${search}%`),
+					ilike(bookmark.siteName, `%${search}%`),
+					ilike(bookmark.description, `%${search}%`),
+					ilike(bookmark.url, `%${search}%`)
+				)
+			: undefined;
+		return await db
+			.select({
+				id: bookmark.id,
+				url: bookmark.url,
+				siteName: bookmark.siteName,
+				title: bookmark.title,
+				description: bookmark.description,
+				type: bookmark.type,
+				imageUrl: bookmark.imageUrl,
+				date: bookmark.date
+			})
+			.from(bookmark)
+			.where(where)
+			.orderBy(desc(bookmark.date))
+			.limit(ITEMS_PER_PAGE)
+			.offset(offset);
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+};
+
+export type BookmarkSearchPagin = Awaited<ReturnType<typeof getBookmarkSearchPagin>>;
+
+export const getBookmarkTotalPage = async (search: string): Promise<number> => {
+	const where = search
+		? or(
+				ilike(bookmark.title, `%${search}%`),
+				ilike(bookmark.siteName, `%${search}%`),
+				ilike(bookmark.description, `%${search}%`),
+				ilike(bookmark.url, `%${search}%`)
+			)
+		: undefined;
+	const result = await db.select({ total: count() }).from(bookmark).where(where);
+	const total = Number(result[0]?.total ?? 0);
+	return Math.ceil(total / ITEMS_PER_PAGE);
+};
+
+type BookmarkAddType = {
+	url: string;
+	siteName?: string | undefined;
+	title: string;
+	description: string;
+	type: string;
+	imageUrl: string;
+	image?: string;
+	tags: Array<string>;
+};
+
+export const addBookmark = async (values: BookmarkAddType) => {
+	try {
+		const tagsIds = await db.select().from(tags).where(inArray(tags.tag, values.tags));
+		const insertedId = createId();
+		const insertData = {
+			id: insertedId,
+			url: values.url ?? '',
+			siteName: values.siteName ?? '',
+			title: values.title ?? '',
+			description: values.description ?? '',
+			type: values.type ?? '',
+			imageUrl: values.imageUrl ?? '',
+			image: values.image ?? ''
+		};
+		await db.insert(bookmark).values(insertData);
+		const insertTags = tagsIds.map((t) => ({ bookmarkId: insertedId, tagsId: t.id }));
+		await db.insert(bookmarkTags).values(insertTags);
+	} catch (error) {
+		console.error(error);
+		// return { error: "Failed to create bookmark" };
+		throw error;
+	}
+};
+
+export const getBookmarkImage = async (id: string) => {
+	try {
+		const [{ gambar }] = await db
+			.select({ gambar: bookmark.image })
+			.from(bookmark)
+			.where(eq(bookmark.id, id))
+			.limit(1);
+		return gambar;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
