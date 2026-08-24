@@ -39,7 +39,7 @@
 		>
 			{#if isOpen}
 				<div
-					class="[&amp;_a]:underline [&amp;_a]:underline-offset-3 [&amp;_a]:hover:text-foreground [&amp;_p:not(:last-child)]:mb-4 h-(--radix-accordion-content-height) bg-accent/50 p-2"
+					class="[&amp;_a]:underline [&amp;_a]:underline-offset-3 [&amp;_a]:hover:text-foreground [&amp;_p:not(:last-child)]:mb-4 min-h-(--radix-accordion-content-height) bg-accent/50 p-2"
 				>
 					<div class="flex flex-wrap gap-2">
 						{#each sites as site, index (`${index}${site}`)}
