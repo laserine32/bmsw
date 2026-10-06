@@ -82,7 +82,7 @@ export const getMSPHImage = async (id: string) => {
 export const getTagMsvphSearchPagin = async (search: string, page: number = 1) => {
 	try {
 		const offset = (page - 1) * ITEMS_PER_PAGE;
-		const where = search ? eq(msvph.siteName, search) : undefined;
+		const where = search ? eq(sql`lower(${msvph.siteName})`, search.toLowerCase()) : undefined;
 		return await db
 			.select({
 				id: msvph.id,

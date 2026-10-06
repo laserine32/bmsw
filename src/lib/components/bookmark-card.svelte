@@ -38,7 +38,7 @@
 				<a target="_blank" href={data.url} rel="external">{data.title}</a>
 			</h4>
 			<p class="mb-2 truncate text-xxs text-foreground/50 md:text-xs">
-				{data.description}
+				{data.date}{data.description}
 			</p>
 		</div>
 	</div>

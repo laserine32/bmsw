@@ -1,7 +1,7 @@
 import { getMsvphSearchPagin, getMsvphTotalPage, getSiteName } from '$lib/server/db/query/msvph';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = ({ url }) => {
 	const query = url.searchParams.get('s') || '';
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	return {
