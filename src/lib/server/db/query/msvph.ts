@@ -26,6 +26,7 @@ export const getMsvphSearchPagin = async (search: string, page: number = 1) => {
 				description: msvph.description,
 				type: msvph.type,
 				imageUrl: msvph.imageUrl,
+				image: msvph.image,
 				date: msvph.date
 			})
 			.from(msvph)

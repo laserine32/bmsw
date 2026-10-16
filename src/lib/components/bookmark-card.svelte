@@ -2,7 +2,11 @@
 	import type { BookmarkType } from '$lib/server/db/query/bookmark';
 	import LazyImage from './lazy-image.svelte';
 
-	let { data }: { data: BookmarkType } = $props();
+	type PropsType = BookmarkType & {
+		image?: string | null;
+	};
+
+	let { data }: { data: PropsType } = $props();
 </script>
 
 <div
@@ -21,7 +25,10 @@
 				<LazyImage
 					alt={data.siteName ?? ``}
 					className="h-full w-full object-cover object-center opacity-100 transition-opacity duration-300"
-					src={data.type === 'ADT' ? `/api/image/${data.id}/online` : `/api/image/${data.id}`}
+					src={data.type === 'ADT'
+						? // ? `https://external-content.duckduckgo.com/iu/?u=${data.imageUrl!}`
+							`${data.image!}`
+						: `/api/image/${data.id}`}
 				/>
 			</div>
 		</a>
@@ -38,7 +45,7 @@
 				<a target="_blank" href={data.url} rel="external">{data.title}</a>
 			</h4>
 			<p class="mb-2 truncate text-xxs text-foreground/50 md:text-xs">
-				{data.date}{data.description}
+				{data.description}
 			</p>
 		</div>
 	</div>
